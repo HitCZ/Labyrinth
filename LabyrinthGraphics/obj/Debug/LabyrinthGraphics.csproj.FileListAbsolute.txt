@@ -1,0 +1,14 @@
+D:\C# projects\Labyrinth\LabyrinthGraphics\bin\Debug\LabyrinthGraphics.exe.config
+D:\C# projects\Labyrinth\LabyrinthGraphics\bin\Debug\LabyrinthGraphics.exe
+D:\C# projects\Labyrinth\LabyrinthGraphics\bin\Debug\LabyrinthGraphics.pdb
+D:\C# projects\Labyrinth\LabyrinthGraphics\obj\Debug\MainWindow.g.cs
+D:\C# projects\Labyrinth\LabyrinthGraphics\obj\Debug\App.g.cs
+D:\C# projects\Labyrinth\LabyrinthGraphics\obj\Debug\LabyrinthGraphics_MarkupCompile.cache
+D:\C# projects\Labyrinth\LabyrinthGraphics\obj\Debug\LabyrinthGraphics_MarkupCompile.lref
+D:\C# projects\Labyrinth\LabyrinthGraphics\obj\Debug\MainWindow.baml
+D:\C# projects\Labyrinth\LabyrinthGraphics\obj\Debug\LabyrinthGraphics.g.resources
+D:\C# projects\Labyrinth\LabyrinthGraphics\obj\Debug\LabyrinthGraphics.Properties.Resources.resources
+D:\C# projects\Labyrinth\LabyrinthGraphics\obj\Debug\LabyrinthGraphics.csproj.GenerateResource.Cache
+D:\C# projects\Labyrinth\LabyrinthGraphics\obj\Debug\LabyrinthGraphics.exe
+D:\C# projects\Labyrinth\LabyrinthGraphics\obj\Debug\LabyrinthGraphics.pdb
+D:\C# projects\Labyrinth\LabyrinthGraphics\obj\Debug\LabyrinthGraphics.csprojResolveAssemblyReference.cache
