@@ -12,5 +12,7 @@
         <TextBox x:Name="textBoxInput" HorizontalAlignment="Left" Height="23" Margin="1045,157,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
         <Button x:Name="buttonGenerate" Content="Generuj" HorizontalAlignment="Left" Margin="1089,218,0,0" VerticalAlignment="Top" Width="76" Click="buttonGenerate_Click"/>
         <Label x:Name="labelInfo" Content="label" HorizontalAlignment="Left" Margin="1035,126,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="buttonSave" Content="Uložit" HorizontalAlignment="Left" Margin="1138,264,0,0" VerticalAlignment="Top" Width="76" Click="buttonSave_Click"/>
+        <Button x:Name="buttonLoad" Content="Načíst" HorizontalAlignment="Left" Margin="1035,264,0,0" VerticalAlignment="Top" Width="75" Click="buttonLoad_Click"/>
     </Grid>
 </Window>

@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using Microsoft.Win32;
+using System.Windows;
 using System.Windows.Controls;
+using System.IO;
 
 namespace LabyrinthGraphics {
     /// <summary>
@@ -10,6 +12,7 @@ namespace LabyrinthGraphics {
         private int defaultSize = 11;
         private string labelText = "Zadejte liché číslo > 4 < 34";
         private string title = "Bludiště";
+        private string dialogFilter = "Text file|*.txt";
 
         public MainWindow() {
             InitializeComponent();
@@ -43,8 +46,8 @@ namespace LabyrinthGraphics {
 
             if (int.TryParse(textBoxInput.Text, out size)) {
                 if (size <= 4 || (size % 2) <= 0 || size > 33) { //špatné číslo
-                    MessageBox.Show("Musíte zadat liché číslo, které je větší" 
-                        + " než 4 a menší než 34.", "Chyba", MessageBoxButton.OK, 
+                    MessageBox.Show("Musíte zadat liché číslo, které je větší"
+                        + " než 4 a menší než 34.", "Chyba", MessageBoxButton.OK,
                         MessageBoxImage.Exclamation);
                 }
                 else {
@@ -53,8 +56,57 @@ namespace LabyrinthGraphics {
                 }
             }
             else { //nebylo zadáno číslo
-                MessageBox.Show("Musíte zadat číslo.", "Chyba", 
+                MessageBox.Show("Musíte zadat číslo.", "Chyba",
                     MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+        }
+
+        /// <summary>
+        /// Po stisku tlačítka zobrazí dialog pro volbu cílového souboru.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonSave_Click(object sender, RoutedEventArgs e) {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = dialogFilter;
+
+            if (dialog.ShowDialog() == true) {
+                string path = dialog.FileName;
+                try {
+                    labyrinth.SaveToFile(path, false);
+
+                    MessageBox.Show("Do souboru " + path + " bylo úspěšně"
+                            + " zapsáno.", "Úspěch", MessageBoxButton.OK,
+                            MessageBoxImage.Information);
+                }
+                catch (IOException ex) {
+                    MessageBox.Show("Do souboru" + path + " se nepodařilo"
+                            + " zapsat.", "Chyba", MessageBoxButton.OK,
+                            MessageBoxImage.Exclamation);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Po stisku tlačítka zobrazí dialog pro volbu vstupního souboru.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonLoad_Click(object sender, RoutedEventArgs e) {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = dialogFilter;
+
+            if (dialog.ShowDialog() == true) {
+                string path = dialog.FileName;
+
+                try {
+                    labyrinth.LoadFromFile(path, canvas);
+                }
+                catch (FileNotFoundException ex) {
+                    MessageBox.Show("Soubor " + path + " nebyl nalezen.", 
+                        "Chyba", MessageBoxButton.OK,
+                        MessageBoxImage.Exclamation);
+                }
             }
         }
     }

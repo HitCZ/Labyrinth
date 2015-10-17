@@ -7,6 +7,7 @@ using System.IO;
 using System.Windows.Controls;
 using System.Windows.Shapes;
 using System.Windows.Media;
+using System.Windows;
 
 namespace LabyrinthGraphics {
     class Labyrinth {
@@ -14,8 +15,8 @@ namespace LabyrinthGraphics {
         private Random r;
         private Direction direction;
         private char[,] map;
-        private const char WALL_VERTICAL = '|';
-        private const char WALL_HORIZONTAL = '_';
+        private char[,] map2 = new char[11, 11];
+        private const char BARRIER = '#';
         private const char BLANK = '0';
         private const char ROOT = 'X';
         private const int MIN_DIMENSION = 4;
@@ -45,6 +46,11 @@ namespace LabyrinthGraphics {
             }
         }
 
+        /// <summary>
+        /// Vykreslí mapu na zadané plátno, pokud je na souřadnici zeď, nakreslí
+        /// černý čtverec, pokud je tam volné místo, nakreslí bílý.
+        /// </summary>
+        /// <param name="canvas">Plátno</param>
         public void DrawMap(Canvas canvas) {
             Rectangle rect;
             SolidColorBrush black = new SolidColorBrush(Colors.Black);
@@ -54,18 +60,18 @@ namespace LabyrinthGraphics {
             int posLeft = 3;
             int posTop = 3;
 
+            canvas.Children.Clear(); //vyčistí canvas
             for (int i = 0; i < map.GetLength(0); i++) {
                 for (int j = 0; j < map.GetLength(0); j++) {
                     rect = new Rectangle();
                     rect.Width = width;
                     rect.Height = height;
 
-                    if (map[i, j] == WALL_HORIZONTAL 
-                        || map[i, j] == WALL_VERTICAL) {
+                    if (map[i, j] == BARRIER) { //pokud zeď
                         rect.Stroke = black;
                         rect.Fill = black;
                     }
-                    else if (map [i, j] == BLANK) {
+                    else if (map[i, j] == BLANK) { //pokud prázdno
                         rect.Stroke = white;
                         rect.Fill = white;
                     }
@@ -86,13 +92,13 @@ namespace LabyrinthGraphics {
         public void CreateBorders() {
             //levá a horní strana
             for (int i = 0; i < map.GetLength(0); i++) {
-                map[i, 0] = WALL_VERTICAL;
-                map[0, i] = WALL_HORIZONTAL;
+                map[i, 0] = BARRIER;
+                map[0, i] = BARRIER;
             }
             //pravá a dolní
             for (int j = map.GetLength(0) - 1; j >= 0; j--) {
-                map[j, map.GetLength(0) - 1] = WALL_VERTICAL;
-                map[map.GetLength(0) - 1, j] = WALL_HORIZONTAL;
+                map[j, map.GetLength(0) - 1] = BARRIER;
+                map[map.GetLength(0) - 1, j] = BARRIER;
             }
         }
 
@@ -135,37 +141,33 @@ namespace LabyrinthGraphics {
 
                 switch (direction) {
                     case Direction.LEFT:
-                        while (y > 0 && map[x, y] != WALL_HORIZONTAL
-                            && map[x, y] != WALL_VERTICAL) {
+                        while (y > 0 && map[x, y] != BARRIER) {
                             //Console.WriteLine(direction + " X: {0} Y: {1}", x, y);
-                            map[x, y] = WALL_HORIZONTAL;
+                            map[x, y] = BARRIER;
                             y--;
                         }
                         break;
 
                     case Direction.UP:
-                        while (x > 0 && map[x, y] != WALL_HORIZONTAL
-                            && map[x, y] != WALL_VERTICAL) {
+                        while (x > 0 && map[x, y] != BARRIER) {
                             //Console.WriteLine(direction + " X: {0} Y: {1}", x, y);
-                            map[x, y] = WALL_VERTICAL;
+                            map[x, y] = BARRIER;
                             x--;
                         }
                         break;
 
                     case Direction.RIGHT:
-                        while (y < map.GetLength(0) && map[x, y] 
-                            != WALL_HORIZONTAL && map[x, y] != WALL_VERTICAL) {
+                        while (y < map.GetLength(0) && map[x, y] != BARRIER) {
                             //Console.WriteLine(direction + " X: {0} Y: {1}", x, y);
-                            map[x, y] = WALL_HORIZONTAL;
+                            map[x, y] = BARRIER;
                             y++;
                         }
                         break;
 
                     case Direction.DOWN:
-                        while (x < map.GetLength(0) && map[x, y] != WALL_HORIZONTAL
-                            && map[x, y] != WALL_VERTICAL) {
+                        while (x < map.GetLength(0) && map[x, y] != BARRIER) {
                             //Console.WriteLine(direction + " X: {0} Y: {1}", x, y);
-                            map[x, y] = WALL_VERTICAL;
+                            map[x, y] = BARRIER;
                             x++;
                         }
                         break;
@@ -202,18 +204,18 @@ namespace LabyrinthGraphics {
                 FillBases();
                 BuildWalls();
             }
-            else 
+            else
                 throw new ArgumentException("Rozsah musí být větší než "
                     + MIN_DIMENSION + " a musí být liché číslo.");
         }
 
         /// <summary>
-        /// Uloží vygenerované bludiště do souboru "labyrinth.txt",
-        /// pokud již soubor existuje, vloží nové bludiště na konec.
+        /// Uloží vygenerované bludiště do zadaného souboru.
         /// </summary>
-        public void ToFile() {
-            using (StreamWriter sw = new StreamWriter("labyrinth.txt", true)) {
-                sw.WriteLine();
+        /// <param name="path">Zvolená cesta k souboru</param>
+        /// <param name="append">Přidat na konec souboru true / false</param>
+        public void SaveToFile(string path, bool append) {
+            using (StreamWriter sw = new StreamWriter(path, append)) {
                 for (int i = 0; i < map.GetLength(0); i++) {
                     for (int j = 0; j < map.GetLength(0); j++) {
                         sw.Write(map[i, j]);
@@ -222,6 +224,37 @@ namespace LabyrinthGraphics {
                 }
                 Console.WriteLine("\nZápis do souboru proběhl úspěšně.");
             }
+        }
+
+        /// <summary>
+        /// Načte z textového souboru vygenerované bludiště a vykreslí 
+        /// jej na plátno.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="canvas"></param>
+        public void LoadFromFile(string path, Canvas canvas) {
+            string[] lines;
+            string fileContent;
+            string line;
+            int numberOfColumns = 0;
+            int numberOfRows = 0;
+
+
+            using (StreamReader sr = new StreamReader(path)) {
+                fileContent = sr.ReadToEnd(); //načte celý soubor
+                lines = fileContent.Split('\n'); //rozdělí na řádky
+                numberOfRows = lines.Length - 1; //spočítá řádky
+                numberOfColumns = lines[0].Length - 1; //spočítá sloupce
+                map = new char[numberOfRows, numberOfColumns]; //definuje novou mapu
+
+                for (int row = 0; row < numberOfRows; row++) {
+                    line = lines[row];
+                    for (int column = 0; column < numberOfColumns; column++) {
+                        map[row, column] = line.ElementAt(column);
+                    }
+                }
+            }
+            DrawMap(canvas); //vykreslení načtené mapy
         }
     }
 }
