@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace LabyrinthGraphics {
-    class Coordination {
+    struct Coordination {
         public int X { get; private set; }
         public int Y { get; private set; }
 
